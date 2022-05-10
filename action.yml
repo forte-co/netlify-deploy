@@ -1,0 +1,50 @@
+# Metadata
+name: Deploy to Netlify
+description: Create a new deployment on Netlify using the Netlify CLI
+
+# Define inputs
+inputs:
+  production:
+    description: "Whether to deploy as a production site or not"
+    required: true
+    type: boolean
+  token:
+    description: "Your access token. Should be passed as a GitHub secret"
+    required: true
+    type: string
+  site-id:
+    description:
+      "Override the site ID. Deploys using the ID present in the current working
+      directory"
+    required: false
+    type: string
+  dir:
+    description: "Directory to deploy"
+    required: true
+    type: string
+  functions-dir:
+    description: "Functions directory to deploy. Defaults to './functions'"
+    required: false
+    default: "./functions"
+    type: string
+outputs:
+  data: ${{ steps.deploy.outputs.data }}
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@3.0.2
+    - uses: actions/cache@v3
+      id: cache
+      with:
+        path: ~/.pnpm-store
+        key: ${{ hashFiles('**/pnpm-lock.yaml') }}
+    - uses: pnpm/action-setup@v2.2.1
+      with:
+        version: "7.0.1"
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 16
+        cache: "pnpm"
+    - run: pnpm install --prod --frozen-lockfile
+    - id: deploy
+      run: "::set-output name=data::./deploy.js"
