@@ -4,10 +4,6 @@ description: Create a new deployment on Netlify using the Netlify CLI
 
 # Define inputs
 inputs:
-  production:
-    description: "Whether to deploy as a production site or not"
-    required: true
-    type: boolean
   token:
     description: "Your access token. Should be passed as a GitHub secret"
     required: true
@@ -18,6 +14,11 @@ inputs:
       directory"
     required: false
     type: string
+  production:
+    description: "Whether to deploy as a production site or not"
+    required: false
+    default: false
+    type: boolean
   dir:
     description: "Directory to deploy"
     required: true
@@ -28,7 +29,9 @@ inputs:
     default: "./functions"
     type: string
 outputs:
-  data: ${{ steps.deploy.outputs.data }}
+  data:
+    description: Output of deploy step
+    value: ${{ steps.deploy.outputs.data }}
 runs:
   using: "composite"
   steps:
@@ -45,6 +48,14 @@ runs:
       with:
         node-version: 16
         cache: "pnpm"
-    - run: pnpm install --prod --frozen-lockfile
+    - run: pnpm install --prod --frozen-lockfile --prefer-offline
+      shell: bash
     - id: deploy
-      run: "::set-output name=data::./deploy.js"
+      env:
+        NETLIFY_AUTH_TOKEN: ${{ inputs.token }}
+        NETLIFY_SITE_ID: ${{ inputs.site-id }}
+      run:
+        "echo '::set-output name=data::$(./deploy.js 'production=${{
+        inputs.production}},dir=${{ inputs.dir }},functions=${{
+        inputs.functions-dir }}')'"
+      shell: bash

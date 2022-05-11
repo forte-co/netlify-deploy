@@ -1,0 +1,18 @@
+name: Test deploy to Netlify
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.0.2
+      - uses: ./
+        id: deploy
+        with:
+          token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          site-id: ${{ secrets.NETLIFY_SITE_ID }}
+          production: false
+          dir: ./test-site
+      - run: echo "${{ steps.outputs.data }}"
