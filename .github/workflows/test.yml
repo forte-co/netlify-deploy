@@ -15,7 +15,4 @@ jobs:
           site-id: ${{ secrets.NETLIFY_SITE_ID }}
           production: false
           dir: ./test-site
-      - run: |
-          echo "${{ steps.deploy.outputs.deploy-url }}"
-          echo "${{ steps.deploy.outputs.site-url }}"
-          echo "${{ steps.deploy.outputs.log-url }}"
+      - run: echo '${{ toJSON(steps.deploy.outputs) }}'

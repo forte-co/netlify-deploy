@@ -28,28 +28,42 @@ inputs:
     required: false
     default: "./functions"
     type: string
+outputs:
+  preview-url:
+    description: Preview URL of the deployed site
+    value: null
+  site-url:
+    description: Production URL of the deployed site
+    value: null
+  log-url:
+    description: Log URL of the deployed site
+    value: null
 runs:
   using: "composite"
   steps:
     - uses: actions/checkout@v3.0.2
+    - uses: actions/cache@v3
+      id: cache
+      with:
+        path: ~/.pnpm-store
+        key: ${{ hashFiles('**/pnpm-lock.yaml') }}
     - uses: pnpm/action-setup@v2.2.1
       with:
         version: "7.0.1"
     - uses: actions/setup-node@v3
       with:
         node-version: 16
-        cache: "pnpm"
-    - run: pnpm add -g netlify-cli@10.3.0
+    - run: pnpm install --prod --frozen-lockfile --prefer-offline
       shell: bash
     - id: deploy
       env:
         NETLIFY_AUTH_TOKEN: ${{ inputs.token }}
         NETLIFY_SITE_ID: ${{ inputs.site-id }}
       run: |
-        echo "::set-output name=data::$(./deploy "{\"production\":\"${{inputs.production }}\",\"dir\":\"${{ inputs.dir }}\",\"functions\":\"${{ inputs.functions-dir }}\"}")"
+        echo "::set-output name=data::$(./deploy '{"production":"${{inputs.production }}","dir":"${{ inputs.dir }}","functions":"${{ inputs.functions-dir }}"}')"
       shell: bash
     - run: |
-        echo "::set-output name=preview-url::${{ steps.deploy.outputs.data }} | jq '.deploy_url'"
-        echo "::set-output name=site-url::${{ steps.deploy.outputs.data }} | jq '.url'"
-        echo "::set-output name=log-url::${{ steps.deploy.outputs.data }} | jq '.logs'"
+        echo "::set-output name=preview-url::$(echo '${{ steps.deploy.outputs.data }}' | jq '.deploy_url')"
+        echo "::set-output name=site-url::$(echo '${{ steps.deploy.outputs.data }}' | jq '.url')"
+        echo "::set-output name=log-url::$(echo '${{ steps.deploy.outputs.data }}' | jq '.logs')"
       shell: bash
