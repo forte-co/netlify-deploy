@@ -36,11 +36,6 @@ runs:
   using: "composite"
   steps:
     - uses: actions/checkout@v3.0.2
-    - uses: actions/cache@v3
-      id: cache
-      with:
-        path: ~/.pnpm-store
-        key: ${{ hashFiles('**/pnpm-lock.yaml') }}
     - uses: pnpm/action-setup@v2.2.1
       with:
         version: "7.0.1"
@@ -48,14 +43,14 @@ runs:
       with:
         node-version: 16
         cache: "pnpm"
-    - run: pnpm install --prod --frozen-lockfile --prefer-offline
+    - run: pnpm add -g netlify-cli@10.3.0
       shell: bash
     - id: deploy
       env:
         NETLIFY_AUTH_TOKEN: ${{ inputs.token }}
         NETLIFY_SITE_ID: ${{ inputs.site-id }}
       run:
-        echo ::set-output name=data::"$(./deploy.js 'production=${{
-        inputs.production }},dir=${{ inputs.dir }},functions=${{
-        inputs.functions-dir }}')"
+        echo ::set-output name=data::"$(./deploy "{\"production\":\"${{
+        inputs.production }}\",\"dir\":\"${{ inputs.dir }}\",\"functions\":\"${{
+        inputs.functions-dir }}\"}")"
       shell: bash

@@ -15,5 +15,3 @@ jobs:
           site-id: ${{ secrets.NETLIFY_SITE_ID }}
           production: false
           dir: ./test-site
-        timeout-minutes: 1
-      - run: echo "${{ steps.deploy.outputs.data }}"
