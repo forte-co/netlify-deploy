@@ -31,13 +31,13 @@ inputs:
 outputs:
   preview-url:
     description: Preview URL of the deployed site
-    value: null
+    value: ${{ steps.deploy.outputs.preview-url }}
   site-url:
     description: Production URL of the deployed site
-    value: null
+    value: ${{ steps.deploy.outputs.site-url }}
   log-url:
     description: Log URL of the deployed site
-    value: null
+    value: ${{ steps.deploy.outputs.log-url }}
 runs:
   using: "composite"
   steps:
@@ -59,11 +59,7 @@ runs:
       env:
         NETLIFY_AUTH_TOKEN: ${{ inputs.token }}
         NETLIFY_SITE_ID: ${{ inputs.site-id }}
-      run: |
-        echo "::set-output name=data::$(./deploy '{"production":"${{inputs.production }}","dir":"${{ inputs.dir }}","functions":"${{ inputs.functions-dir }}"}')"
-      shell: bash
-    - run: |
-        echo "::set-output name=preview-url::$(echo '${{ steps.deploy.outputs.data }}' | jq '.deploy_url')"
-        echo "::set-output name=site-url::$(echo '${{ steps.deploy.outputs.data }}' | jq '.url')"
-        echo "::set-output name=log-url::$(echo '${{ steps.deploy.outputs.data }}' | jq '.logs')"
+      run:
+        './deploy "{\"production\":\"${{inputs.production }}\",\"dir\":\"${{
+        inputs.dir }}\",\"functions\":\"${{ inputs.functions-dir }}\"}"'
       shell: bash

@@ -28,7 +28,9 @@ child_process.execFile(
 			console.log(error, stderr);
 		} else {
 			const data = JSON.parse(stdout);
-			console.log(JSON.stringify(data));
+			console.log(`::set-output name=preview-url::${data.deploy_url}`);
+			console.log(`::set-output name=site-url::${data.url}`);
+			console.log(`::set-output name=log-url::${data.logs}`);
 		}
 	}
 );
