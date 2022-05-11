@@ -53,6 +53,7 @@ runs:
     - uses: actions/setup-node@v3
       with:
         node-version: 16
+        cache: pnpm
     - run: pnpm install --prod --frozen-lockfile --prefer-offline
       shell: bash
     - id: deploy
