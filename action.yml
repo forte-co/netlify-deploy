@@ -55,7 +55,7 @@ runs:
         NETLIFY_AUTH_TOKEN: ${{ inputs.token }}
         NETLIFY_SITE_ID: ${{ inputs.site-id }}
       run:
-        "echo '::set-output name=data::$(./deploy.js 'production=${{
-        inputs.production}},dir=${{ inputs.dir }},functions=${{
-        inputs.functions-dir }}')'"
+        echo ::set-output name=data::"$(./deploy.js 'production=${{
+        inputs.production }},dir=${{ inputs.dir }},functions=${{
+        inputs.functions-dir }}')"
       shell: bash
