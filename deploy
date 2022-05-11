@@ -20,11 +20,15 @@ const args = Object.keys(input).flatMap(option => {
 	}
 });
 
-child_process.execFile("netlify", ["deploy", "--json", ...args], (error, stdout, stderr) => {
-	if (error || stderr) {
-		console.log(error, stderr);
-	} else {
-		const data = JSON.parse(stdout);
-		console.log(JSON.stringify(data));
+child_process.execFile(
+	"./node_modules/.bin/netlify",
+	["deploy", "--json", ...args],
+	(error, stdout, stderr) => {
+		if (error || stderr) {
+			console.log(error, stderr);
+		} else {
+			const data = JSON.parse(stdout);
+			console.log(JSON.stringify(data));
+		}
 	}
-});
+);
