@@ -28,10 +28,6 @@ inputs:
     required: false
     default: "./functions"
     type: string
-outputs:
-  data:
-    description: Output of deploy step
-    value: ${{ steps.deploy.outputs.data }}
 runs:
   using: "composite"
   steps:
@@ -49,8 +45,11 @@ runs:
       env:
         NETLIFY_AUTH_TOKEN: ${{ inputs.token }}
         NETLIFY_SITE_ID: ${{ inputs.site-id }}
-      run:
-        echo ::set-output name=data::"$(./deploy "{\"production\":\"${{
-        inputs.production }}\",\"dir\":\"${{ inputs.dir }}\",\"functions\":\"${{
-        inputs.functions-dir }}\"}")"
+      run: |
+        echo "::set-output name=data::$(./deploy "{\"production\":\"${{inputs.production }}\",\"dir\":\"${{ inputs.dir }}\",\"functions\":\"${{ inputs.functions-dir }}\"}")"
+      shell: bash
+    - run: |
+        echo "::set-output name=preview-url::${{ steps.deploy.outputs.data }} | jq '.deploy_url'"
+        echo "::set-output name=site-url::${{ steps.deploy.outputs.data }} | jq '.url'"
+        echo "::set-output name=log-url::${{ steps.deploy.outputs.data }} | jq '.logs'"
       shell: bash
