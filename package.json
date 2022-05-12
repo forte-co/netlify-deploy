@@ -13,6 +13,6 @@
 	"author": "Noel Forte",
 	"license": "MIT",
 	"dependencies": {
-		"netlify-cli": "10.3.0"
+		"netlify-cli": "10.3.1"
 	}
 }
