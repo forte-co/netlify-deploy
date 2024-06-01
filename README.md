@@ -1,4 +1,4 @@
-🚨 **This repo isn't ready for production use, you might want to try [one of these](https://github.com/marketplace?type=&verification=&query=netlify+) instead.** 🚨
+🚨 **This repo is now archived. You might want to try [one of these](https://github.com/marketplace?type=&verification=&query=netlify+) instead.** 🚨
 
 # Deploy to Netlify with Netlify CLI
 
